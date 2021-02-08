@@ -1,7 +1,12 @@
 from urllib.parse import urljoin
 from datetime import datetime, timedelta
 
+import logging
+
 import requests
+
+
+logging.basicConfig(format='[%(name)s] %(asctime)s %(message)s', level=logging.DEBUG)
 
 
 class PentaApi:
@@ -60,6 +65,7 @@ class PentaApi:
         self._login()
 
     def _login(self):
+        logging.debug('Logging in.')
         headers = {'Content-type': 'application/json'}
         payload = {'email': self.email, 'api_key': self.api_key}
         url = urljoin(PentaApi.DOMAIN, PentaApi.LOGIN)
@@ -72,8 +78,10 @@ class PentaApi:
             self.refresh_expires = data['refresh_expires']
         else:
             raise ValueError('Credentials not valid')
+        logging.debug('Login OK.')
 
     def _refresh(self):
+        logging.debug('Refreshing JWT.')
         if self._is_refresh_expired():
             # log in again
             self._login()
@@ -89,6 +97,7 @@ class PentaApi:
                 self.expires = data['expires']
             else:
                 raise ValueError('Cannot refresh JWT')
+        logging.debug('Refresh OK.')
 
     def _is_expired(self):
         expiration = datetime.strptime(self.expires, '%Y%m%d%H%M%S')
