@@ -90,7 +90,7 @@ class PentaApi:
             url = urljoin(PentaApi.DOMAIN, PentaApi.REFRESH)
             tok = self.refresh_token
             headers = {'Authorization': f'Bearer {tok}'}
-            response = requests.post(url, headers=headers)
+            response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 data = response.json()
                 self.token = data['token']
